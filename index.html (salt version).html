@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Ephemeral</title>
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Great+Vibes&family=Playfair+Display:wght@600&family=Quicksand:wght@400;600;700&family=Special+Elite&display=swap" rel="stylesheet">
+<style>
+html{scroll-behavior:smooth}
+body{min-height:100vh;color:#f8fafc;font-family:Quicksand,sans-serif;background:linear-gradient(135deg,#1e1b4b,#311042,#4c1d95)}
+.script{font-family:'Dancing Script',cursive}
+#stars{position:fixed;inset:0;z-index:0;pointer-events:none}
+.glass{background:rgba(255,255,255,.16);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.3)}
+.inp{width:100%;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.25);border-radius:12px;padding:10px 14px;color:#fff;font-size:16px}
+.inp:focus{outline:2px solid #f9a8d4}
+select.inp option{color:#000}
+.btn{width:100%;background:#ec4899;border-radius:12px;padding:10px;font-weight:700;color:#fff}
+.btn2{background:rgba(127,127,127,.28);border-radius:999px;padding:8px 16px;font-size:14px}
+.pink{background:#ec4899;color:#fff}
+.card{padding:22px 20px 24px;box-shadow:0 12px 28px rgba(0,0,0,.22);transition:transform .25s}
+.f-polaroid{padding:18px 18px 30px;transform:rotate(-1deg)}
+.f-polaroid:nth-child(even){transform:rotate(1.2deg)}
+.card:hover{transform:translateY(-4px) rotate(0)}
+.f-glass{backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.6)}
+.f-ribbon{border-top:6px solid #f472b6}
+.f-notebook{background-image:repeating-linear-gradient(transparent 0 27px,rgba(0,0,0,.13) 27px 28px);border-left:5px double rgba(244,63,94,.6)}
+.f-neon{box-shadow:0 0 0 2px #fff,0 0 22px 4px #f0abfc}
+.glitter{border:2px dashed rgba(255,255,255,.95);animation:gp 2s infinite alternate}
+@keyframes gp{0%{box-shadow:0 0 10px rgba(255,255,255,.5)}100%{box-shadow:0 0 28px rgba(255,215,0,.9),inset 0 0 18px rgba(255,182,193,.8)}}
+.washi{position:absolute;top:-12px;left:50%;transform:translateX(-50%) rotate(-2deg);width:110px;height:24px;background:rgba(255,255,255,.78);border-left:2px dashed rgba(0,0,0,.15);border-right:2px dashed rgba(0,0,0,.15);box-shadow:0 2px 6px rgba(0,0,0,.12);z-index:10}
+.seal{position:absolute;bottom:-10px;right:14px;width:32px;height:32px;border-radius:50%;background:radial-gradient(#f43f5e,#be123c);display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;box-shadow:0 4px 10px rgba(0,0,0,.3);z-index:12}
+.stk{position:absolute;z-index:15;cursor:grab;user-select:none;-webkit-user-select:none;touch-action:none}
+
+#ed{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;background:linear-gradient(135deg,#1e1b4b,#311042,#4c1d95);padding-top:env(safe-area-inset-top)}
+#ed.hidden{display:none}
+#edTop{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 14px}
+#edScroll{flex:1;overflow-y:auto;padding:14px 16px 28px}
+#page{min-height:440px;max-width:440px;margin:8px auto 0;transform:none!important}
+#page input,#page textarea{background:transparent;border:0;outline:0;width:100%;color:inherit;resize:none;font-size:20px}
+#page ::placeholder{color:inherit;opacity:.4}
+#edPanel{background:rgba(15,10,40,.94);padding:10px 12px;min-height:74px;overflow-x:auto;display:flex;gap:10px;align-items:center}
+#edBar{display:flex;justify-content:space-around;background:#0f0a28;padding:6px 4px calc(6px + env(safe-area-inset-bottom));border-top:1px solid rgba(255,255,255,.12)}
+#edBar button{display:flex;flex-direction:column;align-items:center;font-size:11px;opacity:.6;padding:4px 8px}
+#edBar button span:first-child{font-size:20px}
+#edBar button.on{opacity:1;color:#f9a8d4}
+.chip{flex:none;padding:8px 14px;border-radius:999px;background:rgba(255,255,255,.12);font-size:15px;white-space:nowrap;color:#fff}
+.chip.on{background:#ec4899}
+.dot{flex:none;width:38px;height:38px;border-radius:50%;border:3px solid #fff5}
+
+</style>
+</head>
+<body>
+<canvas id="stars"></canvas>
+<main class="relative z-10" style="padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)">
+
+<section id="setup" class="hidden min-h-[100svh] flex items-center justify-center px-4"><div class="glass rounded-2xl p-5 max-w-md text-sm">Open this file and paste your Firebase details into CONFIG at the top of the script.</div></section>
+
+<section id="login" class="hidden min-h-[100svh] flex items-center justify-center px-4"><div class="glass rounded-2xl p-5 w-full max-w-sm space-y-3">
+<h2 class="font-bold">Sign in</h2>
+<input id="email" type="email" placeholder="Email" class="inp" autocomplete="username">
+<input id="pw" type="password" placeholder="Account password" class="inp" autocomplete="current-password">
+<input id="name" placeholder="Your name (shown on entries)" class="inp">
+<button id="loginBtn" class="btn">Sign in</button><p class="err text-pink-300 text-xs"></p></div></section>
+
+<section id="lock" class="hidden min-h-[100svh] flex items-center justify-center px-4"><div class="glass rounded-2xl p-5 w-full max-w-sm space-y-3 text-center">
+<div class="text-4xl">🔒</div><h2 class="font-bold">Journal locked</h2>
+<p class="text-xs opacity-80">Enter your journal passphrase. First time? Pick one now and use the exact same one on both phones.</p>
+<input id="pass" type="password" placeholder="Journal passphrase" class="inp" autocomplete="off">
+<button id="unlockBtn" class="btn">Unlock</button><p class="err text-pink-300 text-xs"></p>
+<button id="logoutBtn" class="text-xs underline opacity-70">Sign out</button></div></section>
+
+<div id="app" class="hidden">
+<section id="hero" class="min-h-[100svh] flex flex-col items-center justify-center text-center px-4 gap-5">
+
+<h1 class="script text-6xl md:text-8xl" style="text-shadow:0 0 24px rgba(255,255,255,.5)">✨ Ephemeral ✨</h1>
+<p style="font-family:'Great Vibes',cursive;font-size:1.7rem" class="opacity-90">Our secret starlight journal &amp; memories</p>
+<div class="flex flex-wrap justify-center gap-3">
+<button id="openBtn" class="btn2 pink">📖 Open our entries</button>
+<button id="newBtn" class="btn2">✍️ Write</button>
+<button id="themeBtn" class="btn2">🎨 Theme</button>
+<button id="stkBtn" class="btn2">🎀 Sticker maker</button>
+<button id="lockBtn" class="btn2">🔒 Lock</button>
+</div>
+<div class="flex gap-2"><button id="backupBtn" class="btn2 text-xs">💾 Save backup</button><label class="btn2 text-xs cursor-pointer">📂 Restore<input id="restoreIn" type="file" accept=".json" class="hidden"></label></div>
+<p class="text-xs opacity-75"><span id="count">0</span> pages recorded</p>
+<button id="downBtn" class="text-3xl animate-bounce" aria-label="Scroll to entries">⌄</button>
+</section>
+
+<section id="entries" class="max-w-5xl mx-auto px-4 pt-6 pb-16 min-h-[100svh]">
+<div class="glass rounded-2xl p-3 mb-8 flex flex-wrap gap-3 items-center justify-between">
+<h2 class="script text-3xl">Our entries</h2>
+<div class="flex gap-2 flex-1 min-w-[220px] justify-end">
+<input id="q" placeholder="Search" class="inp" style="min-width:0">
+<select id="cat" class="inp" style="width:auto"><option value="">All</option><option>Memories</option><option>Future Dreams</option><option>Daily Notes</option><option>Secret Thoughts</option><option>Love Notes</option></select>
+<select id="who" class="inp" style="width:auto"><option value="">All authors</option></select>
+</div></div>
+<div id="list" class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3"></div>
+<p id="empty" class="hidden text-center opacity-80 py-12">No entries found. Tap Write to add one.</p>
+<button id="topBtn" class="btn2 mx-auto block mt-10">⌃ Back to the top</button>
+</section>
+</div>
+</main>
+
+<div id="themeModal" class="hidden fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4"><div class="bg-slate-900 text-white rounded-2xl w-full max-w-lg max-h-[85vh] overflow-y-auto p-5">
+<div class="flex justify-between items-center mb-3"><h2 class="font-bold">Journal theme</h2><button id="themeClose" class="btn2">Close</button></div>
+<div id="themeGrid" class="grid grid-cols-2 gap-3"></div></div></div>
+
+<div id="ed" class="hidden">
+<div id="edTop"><button id="cancelBtn" class="btn2">✕ Cancel</button><button id="delBtn" class="btn2 hidden" style="color:#f87171">Delete</button><button id="saveBtn" class="btn2 pink">Save ✓</button></div>
+<div id="edScroll"><div id="page" class="card rounded-2xl relative flex flex-col">
+<div class="flex justify-between text-[11px] opacity-75 mb-2 mt-2"><span id="pgCat" class="font-bold uppercase tracking-wide"></span><span id="pgDate"></span></div>
+<input id="eTitle" placeholder="Title" class="font-bold mt-4 mb-1" style="font-family:'Playfair Display',Georgia,serif">
+<textarea id="eText" rows="10" placeholder="Write here…" class="py-2"></textarea>
+</div></div>
+<div id="edPanel"></div><div id="edBar"></div>
+</div>
+
+<div id="mkModal" class="hidden fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4"><div class="bg-slate-900 text-white rounded-2xl w-full max-w-sm max-h-[92vh] overflow-y-auto p-5 space-y-3">
+<h2 class="font-bold text-center">🎀 Sticker maker</h2>
+<div class="text-xs">A: choose a photo (best: save the Pinterest image to your phone first)</div>
+<input id="mkFile" type="file" accept="image/*" class="text-xs w-full">
+<div class="text-xs">B: or an image link (many sites, Pinterest included, block this)</div>
+<div class="flex gap-2"><input id="mkUrl" placeholder="https://..." class="inp"><button id="mkUrlBtn" class="btn2">Load</button></div>
+<div class="flex flex-col items-center bg-black/30 rounded-2xl p-3"><canvas id="mkCanvas" width="128" height="128" style="width:128px;height:128px"></canvas><span id="mkHint" class="text-xs opacity-60">Preview appears here</span></div>
+<div class="flex items-center gap-3 text-xs"><input type="color" id="mkBorder" value="#ffffff" class="w-9 h-9 rounded bg-transparent"><span>Outline color</span></div>
+<div class="flex gap-2"><button id="mkClose" class="btn2 ml-auto">Close</button><button id="mkSave" class="btn2 pink">Save sticker</button></div>
+</div></div>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+import {getAuth,signInWithEmailAndPassword,onAuthStateChanged,signOut} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+import {getFirestore,collection,doc,getDoc,setDoc,deleteDoc,onSnapshot} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+// ====== EDIT THIS: paste your Firebase web-app config, and type any long random words as salt (same on both phones) ======
+const CONFIG={firebase:{apiKey:"AIzaSyAnYdrhOiRsrjg6GeAEiAsNA6TQB9bWpso",authDomain:"ephemeral-c7826.firebaseapp.com",projectId:"ephemeral-c7826",appId:"1:526318967804:web:dc08b395f6ff7d46f1b079"},salt:"ej-895da75eef89865c5f78c2aa9a92d69b"};
+// ===================================================================================================================
+
+const $=id=>document.getElementById(id);
+const h=(t,c,s,x)=>{const n=document.createElement(t);if(c)n.className=c;if(s)Object.assign(n.style,s);if(x!=null)n.textContent=x;return n};
+const err=t=>document.querySelectorAll('.err').forEach(n=>n.textContent=t);
+const show=id=>['setup','login','lock','app'].forEach(s=>$(s).classList.toggle('hidden',s!==id));
+const toast=t=>{let n=$('toast');if(!n){n=h('div','fixed left-1/2 z-[60] bg-slate-900 text-white border border-white/20 rounded-full px-4 py-2 text-sm',{transform:'translateX(-50%)',bottom:'max(1.5rem,env(safe-area-inset-bottom))'});n.id='toast';document.body.append(n)}
+n.textContent=t;n.style.display='block';clearTimeout(n.t);n.t=setTimeout(()=>n.style.display='none',2600)};
+const COLORS=[['#ffe4e6','#881337'],['#e0f2fe','#0c4a6e'],['#dcfce7','#14532d'],['#f3e8ff','#581c87'],['#fef3c7','#78350f'],['#ffedd5','#7c2d12'],['#f5f5f4','#1c1917'],['#fae8ff','#701a75'],
+['#ecfccb','#365314'],['#cffafe','#164e63'],['#fee2e2','#7f1d1d'],['#fefce8','#713f12'],['#1e1b4b','#e0e7ff'],['#fde68a','#78350f'],['#ccfbf1','#134e4a'],['#fbcfe8','#831843'],
+['#bfdbfe','#1e3a8a'],['#d9f99d','#3f6212'],['#ddd6fe','#4c1d95'],['#fed7aa','#9a3412'],['#0f172a','#e2e8f0'],['#3b0764','#f3e8ff'],['#064e3b','#d1fae5'],['#4a044e','#fae8ff']];
+const EMOJIS=['🐱','✨','💌','🌙','💖','🧸','☕','🌸','🎀','🍓','🕊️','🕯️'];
+let entries=[],editing=null,color=0,staged=[],drawer=[],arm=0;
+const mine=e=>e.uid===API.uid();
+const pay=e=>({title:e.title,text:e.text,category:e.category,font:e.font,frame:e.frame,color:e.color,washi:e.washi,glitter:e.glitter,seal:e.seal,stickers:e.stickers,name:e.name});
+
+/* ---- entry cards ---- */
+function drag(el,e,i){let sx,sy,ox,oy,on=false,box;
+el.onpointerdown=v=>{on=true;el.setPointerCapture(v.pointerId);box=el.parentElement.getBoundingClientRect();sx=v.clientX;sy=v.clientY;ox=parseFloat(el.style.left);oy=parseFloat(el.style.top)};
+el.onpointermove=v=>{if(!on)return;el.style.left=Math.max(0,Math.min(90,ox+(v.clientX-sx)/box.width*100))+'%';el.style.top=Math.max(0,Math.min(90,oy+(v.clientY-sy)/box.height*100))+'%'};
+el.onpointerup=()=>{if(!on)return;on=false;const s=e.stickers[i],x=parseFloat(el.style.left),y=parseFloat(el.style.top);
+if(Math.abs(x-ox)>.5||Math.abs(y-oy)>.5){s.x=x;s.y=y;API.save(e.id,pay(e),e.createdAt)}}}
+function stk(e,s,i){let el;if(s.t==='i'){if(!/^data:image\//.test(s.v))return h('span');el=h('img','stk',{width:'52px',height:'52px',objectFit:'contain'});el.src=s.v;el.draggable=false}
+else el=h('div','stk text-3xl',null,s.v);
+el.style.left=(s.x??5+i*12)+'%';el.style.top=(s.y??2)+'%';if(mine(e))drag(el,e,i);else{el.style.cursor='default';el.style.touchAction='auto'}return el}
+function card(e){const [bg,fg]=COLORS[e.color]||COLORS[0],fr=e.frame||'polaroid';
+const d=h('div','card rounded-2xl relative flex flex-col f-'+fr+(e.glitter?' glitter':''),{backgroundColor:fr==='glass'?bg+'cc':bg,color:fg});
+if(e.washi!==false)d.append(h('div','washi'));if(e.seal)d.append(h('div','seal',null,'❤'));
+(e.stickers||[]).forEach((s,i)=>d.append(stk(e,s,i)));
+const top=h('div','flex justify-between text-[11px] opacity-75 mb-2 mt-2');
+top.append(h('span','font-bold uppercase tracking-wide',null,e.category),h('span','',null,new Date(e.createdAt).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'})));
+const ft=h('div','flex justify-between items-center text-xs mt-4 pt-2 border-t border-black/10');ft.append(h('span','font-semibold',null,'💖 '+(e.name||'')));
+if(mine(e)){const b=h('button','btn2 text-xs',null,'Edit');b.onclick=()=>{editing=e;fill(e)};ft.append(b)}
+d.append(top,h('h3','text-xl font-bold mb-1 mt-6',{fontFamily:"'Playfair Display',Georgia,serif"},e.title),h('p','whitespace-pre-wrap text-xl py-2',{fontFamily:e.font},e.text),ft);return d}
+function render(){const q=$('q').value.toLowerCase(),c=$('cat').value,w=$('who').value,L=$('list'),W=$('who');L.replaceChildren();
+const names=[...new Set(entries.map(e=>e.name))];if(W.options.length!==names.length+1){W.replaceChildren(new Option('All authors',''),...names.map(n=>new Option(n,n)));W.value=w}
+const f=entries.filter(e=>(!c||e.category===c)&&(!w||e.name===w)&&(e.title+' '+e.text).toLowerCase().includes(q)).sort((a,b)=>b.createdAt-a.createdAt);
+$('count').textContent=entries.length;$('empty').classList.toggle('hidden',f.length>0);f.forEach(e=>L.append(card(e)))}
+$('q').oninput=render;$('cat').onchange=render;$('who').onchange=render;
+
+/* ---- full-page editor ---- */
+const FONTS=[['Cursive',"'Dancing Script',cursive"],['Rounded',"Quicksand,sans-serif"],['Romantic',"'Great Vibes',cursive"],['Serif',"'Playfair Display',serif"],['Typewriter',"'Special Elite',monospace"]];
+const FRAMES=['polaroid','glass','ribbon','notebook','neon'];
+const CATS=['Memories','Future Dreams','Daily Notes','Secret Thoughts','Love Notes'];
+const TABS=[['font','Aa','Font'],['frame','🖼️','Frame'],['color','🎨','Color'],['deco','🎀','Decor'],['stk','😊','Stickers'],['cat','🏷️','Type']];
+let st={},tab='font',sel=-1;
+const clamp=v=>Math.max(0,Math.min(88,v));
+function paint(){const [bg,fg]=COLORS[st.color]||COLORS[0],P=$('page');
+P.className='card rounded-2xl relative flex flex-col f-'+st.frame+(st.glitter?' glitter':'');
+P.style.backgroundColor=st.frame==='glass'?bg+'cc':bg;P.style.color=fg;
+$('eText').style.fontFamily=st.font;$('pgCat').textContent=st.category;
+P.querySelectorAll('.washi,.seal,.stk').forEach(n=>n.remove());
+if(st.washi)P.prepend(h('div','washi'));if(st.seal)P.append(h('div','seal',null,'❤'));
+staged.forEach((s,i)=>P.append(edStk(s,i)))}
+function edStk(s,i){let el;
+if(s.t==='i'){if(!/^data:image\//.test(s.v))return h('span');el=h('img','stk',{width:'56px',height:'56px',objectFit:'contain'});el.src=s.v;el.draggable=false}else el=h('div','stk text-4xl',null,s.v);
+el.style.left=s.x+'%';el.style.top=s.y+'%';if(i===sel)el.style.outline='2px dashed #ec4899';
+let sx,sy,ox,oy,box;
+el.onpointerdown=v=>{el.setPointerCapture(v.pointerId);box=$('page').getBoundingClientRect();sx=v.clientX;sy=v.clientY;ox=s.x;oy=s.y;sel=i};
+el.onpointermove=v=>{if(!el.hasPointerCapture(v.pointerId))return;s.x=clamp(ox+(v.clientX-sx)/box.width*100);s.y=clamp(oy+(v.clientY-sy)/box.height*100);el.style.left=s.x+'%';el.style.top=s.y+'%'};
+el.onpointerup=()=>{paint();if(tab==='stk')panel()};return el}
+function addStk(s){if(staged.length>=8)return toast('Up to 8 stickers per entry.');staged.push({...s,x:30+staged.length*6,y:35+staged.length*4});sel=staged.length-1;paint();panel()}
+function chip(label,on,fn,style){const b=h('button','chip'+(on?' on':''),style,label);b.onclick=fn;$('edPanel').append(b)}
+function panel(){const P=$('edPanel');P.replaceChildren();
+if(tab==='font')FONTS.forEach(([n,f])=>chip(n,st.font===f,()=>{st.font=f;paint();panel()},{fontFamily:f}));
+if(tab==='frame')FRAMES.forEach(f=>chip(f[0].toUpperCase()+f.slice(1),st.frame===f,()=>{st.frame=f;paint();panel()}));
+if(tab==='cat')CATS.forEach(c=>chip(c,st.category===c,()=>{st.category=c;paint();panel()}));
+if(tab==='color')COLORS.forEach(([bg],i)=>{const b=h('button','dot',{background:bg,borderColor:i===st.color?'#ec4899':'#fff5'});b.onclick=()=>{st.color=i;paint();panel()};P.append(b)});
+if(tab==='deco')[['washi','🩹 Washi tape'],['glitter','✨ Glitter border'],['seal','❤ Heart seal']].forEach(([k,l])=>chip(l,st[k],()=>{st[k]=!st[k];paint();panel()}));
+if(tab==='stk'){chip('+ Make',false,mkOpen);
+if(sel>=0)chip('🗑 Remove',false,()=>{staged.splice(sel,1);sel=-1;paint();panel()},{background:'#7f1d1d'});
+EMOJIS.forEach(x=>{const b=h('button','',{fontSize:'30px',flex:'none'},x);b.onclick=()=>addStk({t:'e',v:x});P.append(b)});
+drawer.forEach((src,i)=>{const w=h('div','relative',{flex:'none'}),im=h('img','',{width:'44px',height:'44px',objectFit:'contain'});im.src=src;im.onclick=()=>addStk({t:'i',v:src});
+const x=h('button','absolute text-[10px] bg-black/70 text-white rounded-full w-4 h-4',{top:'-4px',right:'-4px'},'×');x.onclick=()=>{drawer.splice(i,1);API.drawerSave(drawer);panel()};w.append(im,x);P.append(w)})}}
+function bar(){const B=$('edBar');B.replaceChildren();TABS.forEach(([k,i,l])=>{const b=h('button',tab===k?'on':'');b.append(h('span','',null,i),h('span','',null,l));b.onclick=()=>{tab=k;bar();panel()};B.append(b)})}
+function drawDrawer(){if(tab==='stk')panel()}
+function fill(e){st={category:e.category||'Memories',font:e.font||FONTS[0][1],frame:e.frame||'polaroid',color:e.color||0,washi:e.washi!==false,glitter:!!e.glitter,seal:e.seal!==false};
+$('eTitle').value=e.title||'';$('eText').value=e.text||'';staged=(e.stickers||[]).map((s,i)=>({...s,x:s.x??5+i*12,y:s.y??2}));sel=-1;tab='font';
+$('pgDate').textContent=new Date(e.createdAt||Date.now()).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'});
+$('delBtn').classList.toggle('hidden',!editing);$('ed').classList.remove('hidden');document.body.style.overflow='hidden';bar();paint();panel()}
+const closeEd=()=>{$('ed').classList.add('hidden');document.body.style.overflow=''};
+$('newBtn').onclick=()=>{editing=null;fill({title:'',text:'',category:'Memories'})};
+$('cancelBtn').onclick=closeEd;
+$('saveBtn').onclick=()=>{const title=$('eTitle').value.trim(),text=$('eText').value.trim();if(!title||!text)return toast('Add a title and some words first.');
+const p={title,text,category:st.category,font:st.font,frame:st.frame,color:st.color,washi:st.washi,glitter:st.glitter,seal:st.seal,
+stickers:staged.map(s=>({t:s.t,v:s.v,x:s.x,y:s.y})),name:editing?editing.name:API.name()};
+if(JSON.stringify(p).length>600000)return toast('Too many large stickers. Remove one.');
+const id=editing?editing.id:'e_'+Date.now()+'_'+Math.random().toString(36).slice(2,7);
+closeEd();API.save(id,p,editing?editing.createdAt:Date.now());const en=$('entries');if(en)en.scrollIntoView()};
+$('delBtn').onclick=()=>{if(!arm){arm=1;$('delBtn').textContent='Tap again to delete';setTimeout(()=>{arm=0;$('delBtn').textContent='Delete'},3000);return}
+arm=0;$('delBtn').textContent='Delete';API.del(editing.id);closeEd()};
+
+/* ---- sticker maker: circle crop with colored outline ---- */
+let cur=null;const mc=$('mkCanvas'),mg=mc.getContext('2d');
+function mkDraw(){if(!cur)return;mg.clearRect(0,0,128,128);mg.fillStyle=$('mkBorder').value;mg.beginPath();mg.arc(64,64,62,0,6.28);mg.fill();
+mg.save();mg.beginPath();mg.arc(64,64,57,0,6.28);mg.clip();const s=Math.min(cur.width,cur.height);mg.drawImage(cur,(cur.width-s)/2,(cur.height-s)/2,s,s,7,7,114,114);mg.restore();$('mkHint').classList.add('hidden')}
+function mkLoad(src,cors){const im=new Image();if(cors)im.crossOrigin='anonymous';im.onload=()=>{cur=im;mkDraw()};
+im.onerror=()=>toast(cors?'That site blocks it. Save the image to your photos and use option A.':'That image could not be opened.');im.src=src}
+$('mkFile').onchange=v=>{const f=v.target.files[0];v.target.value='';if(f){const r=new FileReader();r.onload=()=>mkLoad(r.result,false);r.readAsDataURL(f)}};
+$('mkUrlBtn').onclick=()=>{const u=$('mkUrl').value.trim();if(u)mkLoad(u,true)};
+$('mkBorder').oninput=mkDraw;
+$('mkSave').onclick=()=>{if(!cur)return toast('Pick an image first.');drawer.push(mc.toDataURL('image/webp',.8));API.drawerSave(drawer);drawDrawer();$('mkModal').classList.add('hidden');toast('Sticker saved to your drawer 🎀')};
+const mkOpen=()=>$('mkModal').classList.remove('hidden');$('stkBtn').onclick=mkOpen;$('mkClose').onclick=()=>$('mkModal').classList.add('hidden');
+
+/* ---- home screen buttons ---- */
+$('openBtn').onclick=$('downBtn').onclick=()=>$('entries').scrollIntoView({behavior:'smooth'});
+$('topBtn').onclick=()=>$('hero').scrollIntoView({behavior:'smooth'});
+$('backupBtn').onclick=()=>API.backup();
+$('restoreIn').onchange=v=>{const f=v.target.files[0];v.target.value='';if(f)API.restore(f)};
+
+/* ---- 16 themes. Stars show on every theme; pastel themes get colored stars so they stay visible ---- */
+const THEMES=[
+['Pastel Galaxy',['#1e1b4b','#311042','#4c1d95']],['Midnight Starlight',['#020617','#0f172a','#1e1b4b']],['Cosmic Sapphire',['#091e42','#0c2a5d','#154689']],
+['Aurora Mint',['#e6fffa','#b2f5ea','#81e6d9'],'#044e54'],['Lavender Dreams',['#2e1065','#3b0764','#581c87']],['Solar Rose',['#fff1f2','#ffe4e6','#fbcfe8'],'#881337'],
+['Cherry Blossom Cosmos',['#701a75','#4a044e','#831843']],['Electric Cyber Glow',['#030712','#111827','#1e1b4b']],['Midnight North Sea',['#142C44','#152D3C','#24345D','#44748E']],
+['Vintage Parchment',['#292524','#1c1917','#44403c']],['Pastel Buttercup Yellow',['#fef9c3','#fef08a','#fde047'],'#713f12'],['Pastel Sky Blue',['#e0f2fe','#bae6fd','#7dd3fc'],'#0c4a6e'],
+['Pastel Sage Green',['#ecfccb','#d9f99d','#a3e635'],'#365314'],['Pastel Lilac Haze',['#f3e8ff','#e9d5ff','#c084fc'],'#581c87'],['Pastel Rose Pink',['#ffe4e6','#fbcfe8','#f472b6'],'#831843'],
+['Pastel Beige Brown',['#f5f5f4','#e7e5e4','#d6d3d1'],'#44403c']];
+const grad=c=>'linear-gradient(135deg,'+c.join(',')+')';
+let PAL=['#ffffff','#fbcfe8','#fef08a'];
+function setTheme(i,save){const [n,c,t]=THEMES[i]||THEMES[0],b=document.body.style;b.background=grad(c);b.backgroundAttachment='fixed';b.color=t||'#f8fafc';
+PAL=t?['#ec4899','#f59e0b','#8b5cf6','#0ea5e9']:['#ffffff','#fbcfe8','#fef08a'];if(save){try{localStorage.ej_theme=i}catch{}}drawThemes(i)}
+function drawThemes(cur){const G=$('themeGrid');G.replaceChildren();THEMES.forEach(([n,c],i)=>{const b=h('button','rounded-xl p-3 text-left text-sm flex items-center gap-2 border-2',{borderColor:i===cur?'#ec4899':'#fff2'});
+b.append(h('span','w-8 h-8 rounded-full shrink-0',{background:grad(c)}),h('span','',null,n));b.onclick=()=>setTheme(i,true);G.append(b)})}
+$('themeBtn').onclick=()=>$('themeModal').classList.remove('hidden');$('themeClose').onclick=()=>$('themeModal').classList.add('hidden');
+
+/* ---- twinkling stars ---- */
+const cv=$('stars'),cx=cv.getContext('2d');let S=[];
+function sz(){cv.width=innerWidth;cv.height=innerHeight;S=Array.from({length:Math.min(100,innerWidth*innerHeight/7000|0)},()=>({x:Math.random()*cv.width,y:Math.random()*cv.height,r:Math.random()*1.6+.9,a:Math.random(),v:Math.random()*.02+.005,k:Math.random()*9|0,p:Math.random()>.55}))}
+(function tick(){cx.clearRect(0,0,cv.width,cv.height);
+for(const s of S){s.a+=s.v;if(s.a>1||s.a<.2)s.v=-s.v;s.a=Math.min(1,Math.max(.2,s.a));const c=PAL[s.k%PAL.length];cx.globalAlpha=s.a;cx.fillStyle=c;cx.shadowColor=c;cx.shadowBlur=s.r*5;cx.beginPath();
+if(s.p){for(let i=0;i<4;i++){const a=i*Math.PI/2;cx.lineTo(s.x+Math.cos(a)*s.r*4,s.y+Math.sin(a)*s.r*4);cx.lineTo(s.x+Math.cos(a+.785)*s.r,s.y+Math.sin(a+.785)*s.r)}cx.closePath()}else cx.arc(s.x,s.y,s.r,0,6.28);cx.fill()}
+requestAnimationFrame(tick)})();
+addEventListener('resize',sz);sz();
+let ti=0;try{ti=+localStorage.ej_theme||0}catch{}setTheme(ti,false);
+
+/* ---- real backend: Firebase login + AES-GCM encryption in the browser ---- */
+let db,auth,user=null,key=null,raw=[],unsub=null,hiddenAt=0;
+const enc=new TextEncoder(),dec=new TextDecoder();
+const b64=u=>{let s='';for(let i=0;i<u.length;i+=8192)s+=String.fromCharCode.apply(null,u.subarray(i,i+8192));return btoa(s)};
+const ub=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+async function derive(p){const m=await crypto.subtle.importKey('raw',enc.encode(p),'PBKDF2',false,['deriveKey']);
+return crypto.subtle.deriveKey({name:'PBKDF2',salt:enc.encode(CONFIG.salt),iterations:250000,hash:'SHA-256'},m,{name:'AES-GCM',length:256},false,['encrypt','decrypt'])}
+async function seal(o){const iv=crypto.getRandomValues(new Uint8Array(12));const ct=await crypto.subtle.encrypt({name:'AES-GCM',iv},key,enc.encode(JSON.stringify(o)));return {iv:b64(iv),ct:b64(new Uint8Array(ct))}}
+async function open(d){return JSON.parse(dec.decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:ub(d.iv)},key,ub(d.ct))))}
+const API={
+uid:()=>user&&user.uid,
+name:()=>localStorage.ej_name||user.email.split('@')[0],
+async save(id,p,createdAt){try{const s=await seal(p);await setDoc(doc(db,'journal',id),{...s,uid:user.uid,createdAt,updatedAt:Date.now()})}catch{toast('Could not save. Check your connection.')}},
+del(id){return deleteDoc(doc(db,'journal',id)).catch(()=>toast('Could not delete.'))},
+backup(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(raw)],{type:'application/json'}));a.download='ephemeral-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click()},
+async restore(f){try{const d=JSON.parse(await f.text());for(const x of d){const {id,...r}=x;await setDoc(doc(db,'journal',id),r)}toast('Restored '+d.length+' entries.')}catch{toast('That file could not be restored.')}},
+async drawerLoad(){try{const s=localStorage.ej_stk;return s?await open(JSON.parse(s)):[]}catch{return[]}},
+async drawerSave(a){try{localStorage.ej_stk=JSON.stringify(await seal(a))}catch{toast('Phone storage is full, so that sticker was not kept.')}}};
+
+function lockNow(go=true){key=null;entries=[];raw=[];drawer=[];if(unsub){unsub();unsub=null}
+$('list').replaceChildren();$('pass').value='';$('eTitle').value='';$('eText').value='';staged=[];sel=-1;document.body.style.overflow='';['ed','mkModal','themeModal'].forEach(m=>$(m).classList.add('hidden'));if(go&&user)show('lock')}
+async function decodeAll(){if(!key)return;const out=[];
+for(const d of raw){try{out.push({id:d.id,uid:d.uid,createdAt:d.createdAt,...await open(d)})}catch{}}entries=out;render()}
+function start(){unsub=onSnapshot(collection(db,'journal'),s=>{raw=s.docs.filter(d=>d.id[0]!=='_').map(d=>({id:d.id,...d.data()}));
+try{localStorage.ej_cache=JSON.stringify(raw)}catch{}decodeAll()},()=>toast('Cannot read the journal. Check your Firestore rules.'))}
+$('lockBtn').onclick=()=>lockNow();
+document.addEventListener('visibilitychange',()=>{if(document.hidden)hiddenAt=Date.now();
+else if(key&&Date.now()-hiddenAt>($('ed').classList.contains('hidden')?120000:600000))lockNow()});
+
+if(CONFIG.firebase.apiKey==='PASTE'){show('setup')}else{
+auth=getAuth(initializeApp(CONFIG.firebase));db=getFirestore();
+onAuthStateChanged(auth,u=>{user=u;if(!u){lockNow(false);show('login')}else if(key)show('app');else show('lock')});
+$('loginBtn').onclick=async()=>{err('');const n=$('name').value.trim();if(n)localStorage.ej_name=n;
+try{await signInWithEmailAndPassword(auth,$('email').value.trim(),$('pw').value)}catch{err('Could not sign in. Check the email and password.')}};
+$('logoutBtn').onclick=()=>signOut(auth);
+$('unlockBtn').onclick=async()=>{err('');const p=$('pass').value;if(p.length<10)return err('Use at least 10 characters (3-4 random words is great).');
+try{key=await derive(p);const ref=doc(db,'journal','_check');let c,known=false;
+try{const s=await getDoc(ref);known=true;c=s.exists()?s.data():null}catch{c=JSON.parse(localStorage.ej_chk||'null')}
+if(c)await open(c);else{if(!known)throw 0;c=await seal({ok:1});await setDoc(ref,{...c,uid:user.uid})}
+localStorage.ej_chk=JSON.stringify(c)}catch{key=null;return err('Wrong passphrase, or no connection.')}
+$('pass').value='';show('app');drawer=await API.drawerLoad();drawDrawer();
+try{raw=JSON.parse(localStorage.ej_cache||'[]')}catch{raw=[]}await decodeAll();start()};
+}
+</script>
+</body>
+</html>
